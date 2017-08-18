@@ -1,5 +1,61 @@
 ;;;; -*- mode: Emacs-Lisp;tab-width: 8;indent-tabs-mode: nil; -*-
 
+(setq custom-file "~/.emacs.d/custom.el")
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(ansi-color-faces-vector
+   [default bold shadow italic underline bold bold-italic bold])
+ '(ansi-color-names-vector
+   ["#3F3F3F" "#CC9393" "#7F9F7F" "#F0DFAF" "#8CD0D3" "#DC8CC3" "#93E0E3" "#DCDCCC"])
+ '(browse-url-browser-function (quote browse-url-generic))
+ '(browse-url-generic-program "x-www-browser")
+ '(company-backends
+   (quote
+    (company-capf company-bbdb company-nxml company-css company-semantic company-clang company-xcode company-cmake company-files
+		  (company-dabbrev-code company-gtags company-etags company-keywords)
+		  company-oddmuse company-dabbrev)))
+ '(custom-enabled-themes (quote (zenburn)))
+ '(custom-safe-themes
+   (quote
+    ("67e998c3c23fe24ed0fb92b9de75011b92f35d3e89344157ae0d544d50a63a72" "ecb9fe1d5b165a35499191a909b2b5710a52935614058b327a39bfbbb07c7dc8" "7356632cebc6a11a87bc5fcffaa49bae528026a78637acd03cae57c091afd9b9" "f5512c02e0a6887e987a816918b7a684d558716262ac7ee2dd0437ab913eaec6" "9d91458c4ad7c74cf946bd97ad085c0f6a40c370ac0a1cbeb2e3879f15b40553" "4e753673a37c71b07e3026be75dc6af3efbac5ce335f3707b7d6a110ecb636a3" "4aee8551b53a43a883cb0b7f3255d6859d766b6c5e14bcb01bed572fcbef4328" "ab04c00a7e48ad784b52f34aa6bfa1e80d0c3fcacc50e1189af3651013eb0d58" "a0feb1322de9e26a4d209d1cfa236deaf64662bb604fa513cca6a057ddf0ef64" default)))
+ '(erc-modules
+   (quote
+    (autoaway autojoin button capab-identify completion fill irccontrols list match menu move-to-prompt netsplit networks noncommands readonly ring stamp spelling track)))
+ '(erc-truncate-mode t)
+ '(evil-leader/leader ",")
+ '(evil-visual-mark-mode t)
+ '(font-use-system-font t)
+ '(ggtags-sort-by-nearness t)
+ '(ggtags-update-on-save t)
+ '(global-evil-surround-mode t)
+ '(global-linum-mode t)
+ '(haskell-mode-hook
+   (quote
+    (capitalized-words-mode haskell-decl-scan-mode haskell-indentation-mode highlight-uses-mode imenu-add-menubar-index interactive-haskell-mode)))
+ '(helm-ls-git-fuzzy-match t)
+ '(jdee-server-dir "~/.emacs.d/jdee-server/")
+ '(jira-url "https://atomampd.atlassian.net/rpc/xmlrpc")
+ '(line-number-mode nil)
+ '(mac-option-modifier (quote meta))
+ '(nrepl-message-colors
+   (quote
+    ("#CC9393" "#DFAF8F" "#F0DFAF" "#7F9F7F" "#BFEBBF" "#93E0E3" "#94BFF3" "#DC8CC3")))
+ '(package-selected-packages
+   (quote
+    (toml-mode toml project-explorer helm-idris 0blayout nix-mode company-pollen pollen-mode ensime intero use-package helm-gtags geiser quack scribble-mode flycheck-yamllint ggtags flycheck-scala-sbt jdee mvn add-node-modules-path slime-company flymake-haskell-multi flx-ido less-css-mode css-eldoc npm-mode flycheck-haskell ag haskell-mode ember-mode geben-helm-projectile geben company-php company evil-vimish-fold graphviz-dot-mode muttrc-mode zenburn-theme tide zeal-at-point yaml-mode xml-rpc web-mode vue-mode vagrant typescript-mode twig-mode tramp-term tabbar slime scss-mode scion rvm rust-mode robe rhtml-mode rainbow-delimiters php-mode markdown-mode magit jira highlight-parentheses helm-robe helm-projectile helm-ls-git helm-git helm-css-scss helm-cider helm-ag-r helm-ag haml-mode evil-visual-mark-mode evil-surround evil-rails evil-paredit evil-numbers evil-nerd-commenter evil-leader emmet-mode elein eldoc-eval editorconfig csv-mode color-theme-sanityinc-solarized color-theme ansible alect-themes ac-js2)))
+ '(pdf-view-midnight-colors (quote ("#DCDCCC" . "#383838")))
+ '(pe/omit-gitignore t)
+ '(safe-local-variable-values
+   (quote
+    ((Base . 10)
+     (Package . CL-USER)
+     (Syntax . COMMON-LISP))))
+ '(slime-company-completion (quote fuzzy)))
+
+
 (setq default-directory "~/emacs-home/")
 (make-directory default-directory t)
 
