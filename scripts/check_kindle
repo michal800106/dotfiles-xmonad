@@ -40,7 +40,7 @@ if verbatim == False:
         outer[header] = value
     outer.attach(msg)
     tempfile = tempfile.NamedTemporaryFile()
-    converter = subprocess.Popen(['/home/edwlan/.cabal/bin/pandoc', '-f', 'markdown', '-t', 'epub', '-o', tempfile.name], stdin=subprocess.PIPE)
+    converter = subprocess.Popen(['/home/michalz/.cabal/bin/pandoc', '-f', 'markdown', '-t', 'epub', '-o', tempfile.name], stdin=subprocess.PIPE)
     converter.communicate(text)
     with open(tempfile.name) as f:
         file = email.mime.application.MIMEApplication(f.read(), 'epub+zip')

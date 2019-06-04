@@ -126,7 +126,7 @@
 
   (defcommand run-yeganesh () ()
     "Run Command given by yeganesh"
-    (let ((cmd (run-shell-command "/home/edwlan/bin/yeganesh_run" t)))
+    (let ((cmd (run-shell-command "/home/michalz/bin/yeganesh_run" t)))
       (run-shell-command cmd)))
 
   (defcommand put-password (identifier) ((:string "Password Identifier? "))

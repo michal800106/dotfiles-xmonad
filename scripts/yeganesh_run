@@ -8,8 +8,8 @@ fi
 (
 	IFS=:
 	if stest -dqr -n "$cache" $PATH; then
-		stest -flx $PATH | sort -u | tee "$cache" | /home/edwlan/.local/bin/yeganesh "$@"
+		stest -flx $PATH | sort -u | tee "$cache" | /home/michalz/.local/bin/yeganesh "$@"
 	else
-		/home/edwlan/.local/bin/yeganesh "$@" < "$cache"
+		/home/michalz/.local/bin/yeganesh "$@" < "$cache"
 	fi
 )# | ${SHELL:-"/bin/sh"} &

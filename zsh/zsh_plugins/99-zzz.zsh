@@ -5,12 +5,12 @@ fi
 
 #zprof
 
-export NVM_DIR="/home/edwlan/.nvm"
+export NVM_DIR="/home/michalz/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
 
 echo 'zshrc done'
 
 #THIS MUST BE AT THE END OF THE FILE FOR GVM TO WORK!!!
-[[ -s "/Users/edwlan/.gvm/bin/gvm-init.sh" ]] && source "/Users/edwlan/.gvm/bin/gvm-init.sh"
+[[ -s "/Users/michalz/.gvm/bin/gvm-init.sh" ]] && source "/Users/michalz/.gvm/bin/gvm-init.sh"
 
 echo plugins done

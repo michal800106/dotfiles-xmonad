@@ -11,7 +11,7 @@ import Data.Word
 import System.IO
 
 import XMonad hiding ( (|||) )
-import XMonad.Actions.CopyWindow(copy,copyWindow,kill1,killAllOtherCopies)
+import XMonad.Actions.CopyWindow(copy,copyWindow,kill1,killAllOtherCopies,copyToAll)
 import XMonad.Actions.CycleWindows()
 import XMonad.Actions.DynamicWorkspaces
 import XMonad.Actions.GridSelect
@@ -81,20 +81,20 @@ imLayout = renamed [Replace "im"] $ withIM myRatio empathyRoster Accordion where
 
 
 base :: NewSelect
-  (ModifiedLayout Rename (Mirror ThreeCol))
+  (ModifiedLayout Rename (ModifiedLayout (Decoration TabbedDecoration DefaultShrinker) Simplest))
   (NewSelect (ModifiedLayout Rename (Mirror Tall))
    (NewSelect Full
     (NewSelect Accordion
      (NewSelect Circle
       (NewSelect SpiralWithDir
-       (NewSelect (ModifiedLayout Rename (ModifiedLayout (Decoration TabbedDecoration DefaultShrinker) Simplest))
+       (NewSelect (ModifiedLayout Rename (Mirror ThreeCol))
         (NewSelect (ModifiedLayout Rename (Mirror Accordion))
          (NewSelect (ModifiedLayout Rename (ModifiedLayout Gaps Full))
           (NewSelect (ModifiedLayout Rename DragPane)
            (NewSelect (ModifiedLayout Rename Grid)
             (NewSelect TwoPane OneBig))))))))))) Word64
-base = mthree ||| wide ||| Full ||| Accordion ||| Circle ||| spiral (6/7)
-   ||| myTabbed ||| wideAccordion ||| writingLayout ||| rows ||| grid
+base = myTabbed ||| wide ||| Full ||| Accordion ||| Circle ||| spiral (6/7)
+   ||| mthree ||| wideAccordion ||| writingLayout ||| rows ||| grid
    ||| TwoPane (3/100) (1/2) ||| OneBig (3/4) (3/4)
   where
     mthree = renamed [Replace "ThreeWide"] $ Mirror threeLayout
@@ -108,8 +108,8 @@ base = mthree ||| wide ||| Full ||| Accordion ||| Circle ||| spiral (6/7)
  -
  -}
 
-tmp = onWorkspace "web" (myTabbed ||| Full ||| TwoPane (3/100) (1/2)) $
-      onWorkspace "terminal" (tiled ||| threeLayout ||| Full) $
+tmp = onWorkspace "web_f" (myTabbed ||| Full ||| TwoPane (3/100) (1/2)) $
+      onWorkspace "term" (tiled ||| myTabbed ||| threeLayout ||| Full) $
       onWorkspace "IM" imLayout $
       --onWorkspace "images" (gimpLayout ||| tiled ||| threeLayout ||| base) $
        tiled ||| threeLayout ||| base
@@ -143,8 +143,9 @@ nchooseLayout conf = do
 
    a <- gridselect conf $ makeLayoutList $
       cycleFront loName $ case wsName of
-         "web" -> webList
-         "terminal" -> terminalList
+         "web_f" -> webList
+         "web_o" -> webList
+         "term" -> terminalList
          "im" -> imList
          "images" -> imagesList
          _ -> defaultList
@@ -207,7 +208,7 @@ scratchpads = [
   NS "mpc" "stterm -c mpc -e ncmpcpp" (className =? "ncmpcpp") floatStyle ,
 
   -- run gvim, find by role
-  NS "notes" "bash -c 'cd $HOME/mywiki; source /usr/local/share/chruby/chruby.sh; chruby 2.2.2; SOYWIKI_VIM=\"gvim --role notes\" /home/edwlan/.gem/ruby/2.2.2/bin/soywiki'" (role =? "notes") floatStyle
+  NS "notes" "bash -c 'cd $HOME/mywiki; source /usr/local/share/chruby/chruby.sh; chruby 2.2.2; SOYWIKI_VIM=\"gvim --role notes\" /home/michalz/.gem/ruby/2.2.2/bin/soywiki'" (role =? "notes") floatStyle
   ] where cls = stringProperty "WM_WINDOW_CLASS"
           role = stringProperty "WM_WINDOW_ROLE"
           floatStyle = customFloating $ W.RationalRect l t w h
@@ -263,7 +264,7 @@ makeSwitchComb mod keyList num action = ((getMod mod, keyList !! num), action)
     getMod Nothing = mod4Mask
     getMod (Just mod) = mod4Mask .|. mod
 
-workspaceNames = ["web", "2", "3", "4", "5", "6", "7", "terminal", "images"]
+workspaceNames = ["web_f", "web_o", "term", "edit", "5", "6", "7", "terminal", "images"]
 
 numKeys :: [KeySym]
 numKeys = [xK_0, xK_1, xK_2, xK_3, xK_4, xK_5, xK_6, xK_7, xK_8, xK_9]
@@ -301,8 +302,8 @@ workspaceKeys =
 
 main :: IO ()
 main = do
-   xmproc <- spawnPipe "/home/edwlan/.local/bin/xmobar /home/edwlan/.xmobarrc"
-   --xmproc1 <- spawnPipe "/home/edwlan/.cabal/bin/xmobar /home/edwlan/.xmobarrc1"
+   xmproc <- spawnPipe "/usr/bin/xmobar /home/michalz/.xmobarrc"
+   --xmproc1 <- spawnPipe "/home/michalz/.cabal/bin/xmobar /home/michalz/.xmobarrc1"
    xmonad $ ewmh defaultConfig {
          manageHook = myManageHook <+> manageSpawn <+> manageHook defaultConfig,
          --handleEventHook = handleTimerEvent,
@@ -313,7 +314,7 @@ main = do
          modMask = mod4Mask,
          focusFollowsMouse = False,
          clickJustFocuses = False,
-         XMonad.workspaces = ["web", "2", "3", "4", "5", "6", "7", "terminal", "images", "IM"]
+         XMonad.workspaces = ["web_f", "web_o", "term", "edit", "5", "6", "7", "terminal", "images", "IM"]
       } `additionalKeys` (workspaceKeys ++
       [
          ((mod4Mask .|. controlMask .|. shiftMask, xK_h ), sendMessage $ Move L),
@@ -330,7 +331,7 @@ main = do
          ((mod4Mask .|. shiftMask, xK_grave), shiftNSwitch windows "IM" ),
          ((mod4Mask .|. shiftMask, xK_m), withWorkspace defaultXPConfig (windows . copy)),
          ((mod4Mask .|. shiftMask, xK_n), addWorkspacePrompt defaultXPConfig),
-         ((mod4Mask .|. shiftMask, xK_Return), spawnHere "/usr/bin/x-terminal-emulator"),
+         ((mod4Mask .|. shiftMask, xK_Return), spawn "/usr/bin/x-terminal-emulator"),
          ((mod4Mask .|. shiftMask, xK_r), renameWorkspace defaultXPConfig),
          ((mod4Mask .|. shiftMask, xK_t), kill1),
          ((mod4Mask .|. shiftMask, xK_w), gridselectWorkspace defaultGSConfig (\ws -> greedyView ws . shift ws)),
@@ -340,15 +341,15 @@ main = do
          ((mod4Mask, xK_g), goToSelected defaultGSConfig),
          --((mod4Mask, xK_grave), scratchpadSpawnActionTerminal "urxvt"),
          {-((mod4Mask, xK_grave), switchWorkspace "IM" ),-}
-         ((mod4Mask, xK_KP_Add), spawn "/usr/bin/zsh /home/edwlan/bin/dzen_mpc_status"),
-         ((mod4Mask, xK_KP_Divide), spawn "/usr/bin/zsh /home/edwlan/bin/dmenu_play_mpd"),
-         ((mod4Mask, xK_KP_Multiply), spawn "/usr/bin/zsh /home/edwlan/bin/dmenu_queue_mpd"),
-         ((mod4Mask, xK_KP_Subtract), spawn "/usr/bin/zsh /home/edwlan/bin/dmenu_queueplay_mpd"),
-         ((mod4Mask, xK_p), spawnHere "/home/edwlan/bin/yeganesh_run -f"),
+         ((mod4Mask, xK_KP_Add), spawn "/usr/bin/zsh /home/michalz/bin/dzen_mpc_status"),
+         ((mod4Mask, xK_KP_Divide), spawn "/usr/bin/zsh /home/michalz/bin/dmenu_play_mpd"),
+         ((mod4Mask, xK_KP_Multiply), spawn "/usr/bin/zsh /home/michalz/bin/dmenu_queue_mpd"),
+         ((mod4Mask, xK_KP_Subtract), spawn "/usr/bin/zsh /home/michalz/bin/dmenu_queueplay_mpd"),
+         ((mod4Mask, xK_p), spawn "exec `/home/michalz/bin/yeganesh_run -f`"),
          ((mod4Mask, xK_q), (withSelectedWindow $ windows . W.focusWindow) defaultGSConfig >> windows W.shiftMaster),
          ((mod4Mask, xK_semicolon), nchooseLayout defaultGSConfig),
          ((mod4Mask, xK_w), gridselectWorkspace defaultGSConfig greedyView),
-
+         ((mod4Mask, xK_v ), windows copyToAll), -- @@ Make focused window always visible
          ((mod4Mask, xK_Left), onPrevNeighbour W.view), 
          ((mod4Mask, xK_Right), onNextNeighbour W.view)
 

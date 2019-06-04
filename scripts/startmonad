@@ -1,8 +1,8 @@
 #!/bin/zsh
 
 export PATH=$HOME/bin:$PATH
-#export LD_LIBRARY_PATH=/home/edwlan/gtk-git/inst/lib/:/home/edwlan/lib:$LD_LIBRARY_PATH
-export LD_LIBRARY_PATH=/home/edwlan/lib:$LD_LIBRARY_PATH
+#export LD_LIBRARY_PATH=/home/michalz/gtk-git/inst/lib/:/home/michalz/lib:$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH=/home/michalz/lib:$LD_LIBRARY_PATH
 #xrandr --output HDMI-0 --mode 1920x1200 --left-of VGA-0
 #xrandr --output HDMI-0 --primary
 #xrandr --output VGA-0 --mode 1024x768
@@ -74,5 +74,5 @@ export SSH_AUTH_SOCK
 export GPG_AGENT_INFO
 export GNOME_KEYRING_PID
 
-exec /home/edwlan/bin/stumpwm
+exec /home/michalz/bin/stumpwm
 #exec xmonad

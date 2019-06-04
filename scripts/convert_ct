@@ -5,7 +5,7 @@ import lxml.etree
 import lxml.html
 import sys
 
-b = lxml.etree.parse('/home/edwlan/bin/ct.xsl')
+b = lxml.etree.parse('/home/michalz/bin/ct.xsl')
 with file(sys.argv[1], 'w') as f:
   for fil in sys.argv[2:]:
     a = lxml.html.parse(fil)
