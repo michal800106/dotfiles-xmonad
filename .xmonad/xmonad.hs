@@ -20,8 +20,8 @@ import XMonad.Actions.SpawnOn
 import XMonad.Core()
 import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.EwmhDesktops
-import XMonad.Hooks.ICCCMFocus
 import XMonad.Hooks.ManageDocks
+import XMonad.Hooks.ManageHelpers
 import XMonad.Layout.Accordion
 import XMonad.Layout.Circle
 import XMonad.Layout.Combo()
@@ -66,7 +66,7 @@ tiled :: Tall a
 tiled = Tall nmaster delta ratio
 
 myTabbed :: ModifiedLayout Rename (ModifiedLayout (Decoration TabbedDecoration DefaultShrinker) Simplest) Word64
-myTabbed = renamed [Replace "Tabbed"] $ tabbedBottom shrinkText defaultTheme
+myTabbed = renamed [Replace "Tabbed"] $ tabbedBottom shrinkText def
 
 threeLayout :: ThreeCol a
 threeLayout = ThreeColMid nmaster delta ratio
@@ -159,7 +159,7 @@ nchooseLayout conf = do
    wrapped_loName :: X String
    wrapped_loName =  liftM (fromMaybe "") logLayout
 
-   wrapped_wsName :: X String 
+   wrapped_wsName :: X String
    wrapped_wsName =  liftM (fromMaybe "") logCurrent
 
    cycleFront :: String -> [String] -> [String]
@@ -191,8 +191,8 @@ myManageHook = composeAll
    , className =? "Qasmixer" --> doFloat
    , className =? "Sonata" --> doFloat
    , className =? "feh" --> viewShift "images"
+   , className =? "Notification-daemon" --> doSideFloat C
    , className =? "Display.im6" --> viewShift "images"
-   , manageDocks
    ] <+> manageScratchPad
  where role = stringProperty "WM_WINDOW_ROLE"
 
@@ -293,7 +293,7 @@ workspaceKeys =
       ] ++ [
       ((mod4Mask, xK_0), withNthWorkspace greedyView 0),
       ((mod4Mask .|. shiftMask, xK_0), withNthWorkspace copy 0),
-      ((mod4Mask, head numPadKeys), withNthWorkspace greedyView 0) 
+      ((mod4Mask, head numPadKeys), withNthWorkspace greedyView 0)
       ]
     where
       bindNum action = combForNum numKeys action . Just
@@ -304,11 +304,11 @@ main :: IO ()
 main = do
    xmproc <- spawnPipe "/usr/bin/xmobar /home/michalz/.xmobarrc"
    --xmproc1 <- spawnPipe "/home/michalz/.cabal/bin/xmobar /home/michalz/.xmobarrc1"
-   xmonad $ ewmh defaultConfig {
-         manageHook = myManageHook <+> manageSpawn <+> manageHook defaultConfig,
+   xmonad $ docks $ ewmh def {
+         manageHook = myManageHook <+> manageSpawn <+> manageHook def,
          --handleEventHook = handleTimerEvent,
          layoutHook = maximize myLayout,
-         logHook = takeTopFocus >> dynamicLogWithPP myPP {
+         logHook = dynamicLogWithPP myPP {
            ppOutput = hPutStrLn xmproc
          },
          modMask = mod4Mask,
@@ -323,22 +323,23 @@ main = do
          ((mod4Mask .|. controlMask .|. shiftMask, xK_l), sendMessage $ Move R),
          ((mod4Mask .|. controlMask, xK_backslash), maximizeFlop),
          ((mod4Mask .|. controlMask, xK_grave), shiftNSwitch windows "IM" ),
-         ((mod4Mask .|. controlMask, xK_m), withWorkspace defaultXPConfig (windows . shift)),
+         ((mod4Mask .|. controlMask, xK_m), withWorkspace def (windows . shift)),
          ((mod4Mask .|. controlMask, xK_q     ), spawn "if type xmonad; then xmonad --recompile && xmonad --restart; else xmessage xmonad not in \\$PATH: \"$PATH\"; fi"),
-         ((mod4Mask .|. controlMask, xK_t), killAllOtherCopies),
          ((mod4Mask .|. shiftMask, xK_backslash), maximizeSwitch),
          ((mod4Mask .|. shiftMask, xK_BackSpace), removeWorkspace),
          ((mod4Mask .|. shiftMask, xK_grave), shiftNSwitch windows "IM" ),
-         ((mod4Mask .|. shiftMask, xK_m), withWorkspace defaultXPConfig (windows . copy)),
-         ((mod4Mask .|. shiftMask, xK_n), addWorkspacePrompt defaultXPConfig),
+         ((mod4Mask .|. shiftMask, xK_m), withWorkspace def (windows . copy)),
+         ((mod4Mask .|. shiftMask, xK_n), addWorkspacePrompt def),
          ((mod4Mask .|. shiftMask, xK_Return), spawn "/usr/bin/x-terminal-emulator"),
-         ((mod4Mask .|. shiftMask, xK_r), renameWorkspace defaultXPConfig),
+         ((mod4Mask .|. shiftMask, xK_r), renameWorkspace def),
+         ((mod4Mask .|. shiftMask, xK_q), spawn "if type xmonad; then xmonad --recompile && xmonad --restart; else xmessage xmonad not in \\$PATH: \"$PATH\"; fi"),
          ((mod4Mask .|. shiftMask, xK_t), kill1),
-         ((mod4Mask .|. shiftMask, xK_w), gridselectWorkspace defaultGSConfig (\ws -> greedyView ws . shift ws)),
+         ((mod4Mask .|. shiftMask, xK_w), gridselectWorkspace def (\ws -> greedyView ws . shift ws)),
+         ((mod4Mask .|. controlMask, xK_v), killAllOtherCopies),
          --((mod4Mask, xK_apostrophe), scratchpadSpawnActionTerminal "gvim"),
          ((mod4Mask, xK_backslash), withFocused (sendMessage . maximizeRestore)),
          ((mod4Mask, xK_b), sendMessage ToggleStruts),
-         ((mod4Mask, xK_g), goToSelected defaultGSConfig),
+         ((mod4Mask, xK_g), goToSelected def),
          --((mod4Mask, xK_grave), scratchpadSpawnActionTerminal "urxvt"),
          {-((mod4Mask, xK_grave), switchWorkspace "IM" ),-}
          ((mod4Mask, xK_KP_Add), spawn "/usr/bin/zsh /home/michalz/bin/dzen_mpc_status"),
@@ -346,12 +347,12 @@ main = do
          ((mod4Mask, xK_KP_Multiply), spawn "/usr/bin/zsh /home/michalz/bin/dmenu_queue_mpd"),
          ((mod4Mask, xK_KP_Subtract), spawn "/usr/bin/zsh /home/michalz/bin/dmenu_queueplay_mpd"),
          ((mod4Mask, xK_p), spawn "exec `/home/michalz/bin/yeganesh_run -f`"),
-         ((mod4Mask, xK_q), (withSelectedWindow $ windows . W.focusWindow) defaultGSConfig >> windows W.shiftMaster),
-         ((mod4Mask, xK_semicolon), nchooseLayout defaultGSConfig),
-         ((mod4Mask, xK_w), gridselectWorkspace defaultGSConfig greedyView),
+         ((mod4Mask, xK_e), (withSelectedWindow $ windows . W.focusWindow) def >> windows W.shiftMaster),
+         ((mod4Mask, xK_semicolon), nchooseLayout def),
+         ((mod4Mask, xK_w), gridselectWorkspace def greedyView),
          ((mod4Mask, xK_v ), windows copyToAll), -- @@ Make focused window always visible
-         ((mod4Mask, xK_Left), onPrevNeighbour W.view), 
-         ((mod4Mask, xK_Right), onNextNeighbour W.view)
+         ((mod4Mask, xK_Left), onPrevNeighbour def W.view),
+         ((mod4Mask, xK_Right), onNextNeighbour def W.view)
 
       ]
       ++ [
@@ -368,4 +369,3 @@ main = do
          ((mod4Mask .|. mod1Mask, xK_6), namedScratchpadAction scratchpads "mcabber"),
          ((mod4Mask .|. mod1Mask, numPadKeys !! 6), namedScratchpadAction scratchpads "mcabber")
       ])
-
